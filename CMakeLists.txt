@@ -21,7 +21,7 @@ target_include_directories(zoh PUBLIC include)
 
 # Example coordinator main
 add_executable(coordinator
-        src/examples/coordinator.cpp
+        examples/coordinator.cpp
 )
 target_link_libraries(coordinator PRIVATE zoh)
 

@@ -1,10 +1,10 @@
 #include <iostream>
-#include "../../include/platform/RawSpinelDriver.h"
-#include "../../include/ZigbeeMac.h"
-#include "../../include/ZigbeeNwk.h"
-#include "../../include/ZigbeeAps.h"
-#include "../../include/ZigbeeZdo.h"
-#include "../../include/SecurityManager.h"
+#include "platform/RawSpinelDriver.h"
+#include "ZigbeeMac.h"
+#include "ZigbeeNwk.h"
+#include "ZigbeeAps.h"
+#include "ZigbeeZdo.h"
+#include "SecurityManager.h"
 
 int main()
 {
