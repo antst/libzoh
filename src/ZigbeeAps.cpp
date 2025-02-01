@@ -13,9 +13,9 @@ void ZigbeeAps::start() {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (!m_running) {
         m_running = true;
-        m_nwk.setFrameIndicationCallback(
+        m_nwk.setNwkPayloadCallback(
                 [this](const std::vector<uint8_t> &nwkPayload, uint16_t srcAddr, uint16_t dstAddr) {
-                    this->handleNwkIndication(nwkPayload, srcAddr, dstAddr);
+                    this->handleNwkPayload(nwkPayload, srcAddr, dstAddr);
                 }
         );
         m_nwk.start();
@@ -26,7 +26,7 @@ void ZigbeeAps::stop() {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (m_running) {
         m_running = false;
-        m_nwk.setFrameIndicationCallback(nullptr);
+        m_nwk.setNwkPayloadCallback(nullptr);
         m_nwk.stop();
     }
 }
@@ -74,8 +74,8 @@ bool ZigbeeAps::sendApsData(uint16_t dstAddr, uint16_t clusterId,
 }
 
 // inbound from NWK
-void ZigbeeAps::handleNwkIndication(const std::vector<uint8_t> &nwkPayload,
-                                    uint16_t srcAddr, uint16_t dstAddr) {
+void ZigbeeAps::handleNwkPayload(const std::vector<uint8_t> &nwkPayload,
+                                 uint16_t srcAddr, uint16_t dstAddr) {
     // parse APS header
     if (nwkPayload.size() < 6) return;
     uint8_t frameCtrl = nwkPayload[0];

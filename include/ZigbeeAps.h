@@ -38,8 +38,8 @@ public:
                      bool apsSecurity);
 
 private:
-    void handleNwkIndication(const std::vector<uint8_t> &nwkPayload,
-                             uint16_t srcAddr, uint16_t dstAddr);
+    void handleNwkPayload(const std::vector<uint8_t> &nwkPayload,
+                          uint16_t srcAddr, uint16_t dstAddr);
 
     ZigbeeNwk &m_nwk;
     SecurityManager &m_sec;

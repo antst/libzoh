@@ -41,7 +41,7 @@ void ZigbeeNwk::stop() {
     }
 }
 
-void ZigbeeNwk::setFrameIndicationCallback(NwkFrameIndicationCallback cb) {
+void ZigbeeNwk::setNwkPayloadCallback(NwkPayloadHandler cb) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_cb = cb;
 }

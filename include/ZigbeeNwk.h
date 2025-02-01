@@ -6,9 +6,9 @@
 #include "ZigbeeMac.h"
 #include "SecurityManager.h"
 
-using NwkFrameIndicationCallback = std::function<void(const std::vector<uint8_t> &nwkPayload,
-                                                      uint16_t srcAddr,
-                                                      uint16_t dstAddr)>;
+using NwkPayloadHandler = std::function<void(const std::vector<uint8_t> &nwkPayload,
+                                             uint16_t srcAddr,
+                                             uint16_t dstAddr)>;
 
 enum class RouteState {
     IDLE = 0,
@@ -61,7 +61,7 @@ public:
 
     void stop();
 
-    void setFrameIndicationCallback(NwkFrameIndicationCallback cb);
+    void setNwkPayloadCallback(NwkPayloadHandler cb);
 
     // Outbound NWK data
     bool sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAddr, uint8_t radius=0);
@@ -146,7 +146,7 @@ private:
     SecurityManager &m_sec;
 
     std::mutex m_mutex;
-    NwkFrameIndicationCallback m_cb;
+    NwkPayloadHandler m_cb;
 
     // neighbor/route tables
     std::unordered_map<uint16_t, NeighborTableEntry> m_neighborTable;
