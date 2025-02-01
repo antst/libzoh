@@ -224,8 +224,19 @@ void RawSpinelDriver::handleSpinelFrame(const std::vector<uint8_t> &spinelFrame)
     if (cmd == (uint16_t) SpinelCommand::SPINEL_CMD_PROP_VALUE_IS) {
         if (prop == SPINEL_PROP_STREAM_RAW) {
             // raw 802.15.4 frame inbound
-            if (m_rawFrameHandler) {
-                m_rawFrameHandler(payload);
+            if (payload.size() >= 2) {
+                // Extract RSSI and LQI from the last two bytes.
+                int8_t rssi = static_cast<int8_t>(payload[payload.size() - 2]);
+                uint8_t lqi = payload[payload.size() - 1];
+                // Remove the last two bytes from the actual frame payload.
+                std::vector<uint8_t> rawFrame(payload.begin(), payload.end() - 2);
+                // Call the raw frame callback with the extracted metadata.
+                if (m_rawFrameHandler)
+                    m_rawFrameHandler(rawFrame, rssi, lqi);
+            } else {
+                // Not enough bytes for metadata; deliver with default values.
+                if (m_rawFrameHandler)
+                    m_rawFrameHandler(payload, 0, 0);
             }
         } else {
             // some other property => call event handler

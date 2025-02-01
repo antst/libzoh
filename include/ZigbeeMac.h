@@ -66,7 +66,7 @@ public:
 
 private:
     // Inbound raw frame from RCP
-    void handleInboundRaw(const std::vector<uint8_t> &frame);
+    void handleInboundRaw(const std::vector<uint8_t> &frame, const int8_t rssi, const uint8_t lqi);
 
     // Spinel event handler for ack success/fail, association confirmations, etc.
     void handleSpinelEvent(uint16_t propId, const std::vector<uint8_t> &data);

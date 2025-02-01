@@ -12,7 +12,7 @@
 /**
  * Callback when a raw 802.15.4 frame arrives from the RCP.
  */
-using RawFrameHandler = std::function<void(const std::vector<uint8_t> &frame)>;
+using RawFrameHandler = std::function<void(const std::vector<uint8_t> &frame, const int8_t rssi, const uint8_t lqi)>;
 
 /**
  * Callback for property changes or spinel events (like channel set confirm).

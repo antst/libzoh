@@ -25,8 +25,8 @@ void ZigbeeMac::start() {
         m_running = true;
         // Set inbound raw frame callback
         m_spinel.setRawFrameHandler(
-                [this](const std::vector<uint8_t> &frame) {
-                    handleInboundRaw(frame);
+                [this](const std::vector<uint8_t> &frame, const int8_t rssi, const uint8_t lqi) {
+                    handleInboundRaw(frame,rssi,lqi);
                 }
         );
         // Set spinel event callback for ack or assoc
@@ -96,7 +96,7 @@ bool ZigbeeMac::isMacAssociationEnabled() {
 /********************************************************************
  * handleInboundRaw
  ********************************************************************/
-void ZigbeeMac::handleInboundRaw(const std::vector<uint8_t> &frame) {
+void ZigbeeMac::handleInboundRaw(const std::vector<uint8_t> &frame, const int8_t rssi, const uint8_t lqi) {
     // If MAC association is enabled, check if this is an association request or response
     if (m_macAssocEnabled && frame.size() > 3) {
         // Example: check MAC FrameControl for 0xC0=Assoc request?
@@ -118,7 +118,7 @@ void ZigbeeMac::handleInboundRaw(const std::vector<uint8_t> &frame) {
     // Otherwise pass up to NWK
     std::lock_guard<std::mutex> lock(m_mutex);
     if (m_frameHandler) {
-        m_frameHandler(frame,50,200);
+        m_frameHandler(frame,rssi,lqi);
     }
 }
 
