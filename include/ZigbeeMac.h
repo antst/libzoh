@@ -10,7 +10,9 @@
  * Callback when a raw MAC frame is received from the radio.
  *  - frame: entire 802.15.4 MAC frame
  */
-using MacFrameHandler = std::function<void(const std::vector<uint8_t> &frame)>;
+using MacFrameHandler = std::function<void(const std::vector<uint8_t> &frame,
+                                           int8_t rssi,
+                                           uint8_t lqi)>;
 
 /**
  * Callback for TX done events:

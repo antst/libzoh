@@ -70,7 +70,7 @@ public:
     * @brief Called by MAC layer when a raw MAC frame arrives that is identified as NWK.
     *        We parse the NWK header, handle route, and possibly deliver up or forward.
     */
-    void handleInboundMacFrame(const std::vector<uint8_t> &macPayload,
+    void handleInboundMacFrame(const std::vector<uint8_t> &macFrame,
                                int8_t rssi, uint8_t lqi);
 
     // Route/repair
@@ -87,8 +87,6 @@ public:
     std::string debugNeighborTable() const;
 
 private:
-    // Inbound from MAC
-    void handleMacFrame(const std::vector<uint8_t> &macFrame);
 
     // TX done from MAC
     void handleMacTxDone(bool success);

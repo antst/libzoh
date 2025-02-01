@@ -15,7 +15,9 @@ void ZigbeeNwk::start() {
         m_running = true;
         // set mac callbacks
         m_mac.setMacFrameHandler(
-                [this](const std::vector<uint8_t> &frame) { handleMacFrame(frame); }
+                [this](const std::vector<uint8_t> &frame, int8_t rssi, uint8_t lqi) {
+                    handleInboundMacFrame(frame, rssi, lqi);
+                }
         );
         m_mac.setMacTxDoneHandler(
                 [this](bool success) { handleMacTxDone(success); }
@@ -83,7 +85,7 @@ bool ZigbeeNwk::sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAd
     // 2) Build NWK frame
     bool security = false;
     bool srcRouteFlag = !routePath.empty();
-    if (radius==0) radius=m_radius;
+    if (radius == 0) radius = m_radius;
     std::vector<uint8_t> nwkFrame = buildNwkFrame(payload, dstAddr, m_ownShortAddr, radius, m_sequenceNumber++,
                                                   security, srcRouteFlag, routePath);
     // NWK encrypt
@@ -95,27 +97,6 @@ bool ZigbeeNwk::sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAd
     return m_mac.sendFrame(macFrame);
 }
 
-// inbound from MAC
-void ZigbeeNwk::handleMacFrame(const std::vector<uint8_t> &macFrame) {
-    // parse NWK header
-    // do NWK decrypt
-    std::vector<uint8_t> frameCopy = macFrame;
-    if (!nwkDecrypt(frameCopy))
-        return;
-
-    // minimal parse
-    if (frameCopy.size() < 4) return;
-    uint16_t dst = frameCopy[2] | (frameCopy[3] << 8);
-    uint16_t src = 0x0001; // stub
-    // remove NWK header
-    if (frameCopy.size() > 8) {
-        std::vector<uint8_t> nwkPayload(frameCopy.begin() + 8, frameCopy.end());
-        std::lock_guard<std::mutex> lock(m_mutex);
-        if (m_cb) {
-            m_cb(nwkPayload, src, dst);
-        }
-    }
-}
 
 void ZigbeeNwk::handleMacTxDone(bool success) {
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -291,8 +272,11 @@ void ZigbeeNwk::updateNeighbor(uint16_t shortAddr, uint64_t extAddr, int8_t rssi
  *   - handle route commands
  *   - handle MTO or source route
  ********************************************************************/
-void ZigbeeNwk::handleInboundMacFrame(const std::vector<uint8_t> &macPayload,
+void ZigbeeNwk::handleInboundMacFrame(const std::vector<uint8_t> &macFrame,
                                       int8_t rssi, uint8_t lqi) {
+    std::vector<uint8_t> macPayload = macFrame;
+    if (!nwkDecrypt(macPayload))
+        return;
     // parse NWK header
     NwkHeader hdr;
     size_t headerLen = 0;

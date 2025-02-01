@@ -118,7 +118,7 @@ void ZigbeeMac::handleInboundRaw(const std::vector<uint8_t> &frame) {
     // Otherwise pass up to NWK
     std::lock_guard<std::mutex> lock(m_mutex);
     if (m_frameHandler) {
-        m_frameHandler(frame);
+        m_frameHandler(frame,50,200);
     }
 }
 
