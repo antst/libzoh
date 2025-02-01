@@ -42,7 +42,7 @@ struct NwkFrameControl {
     bool sourceRoute = false;
 };
 
-struct NwkHeader {
+struct NwkFrameHeader {
     NwkFrameControl frameControl;
     uint8_t sequenceNumber;
     uint16_t sourceAddr;
@@ -101,7 +101,7 @@ private:
 
     void sendLinkStatus();
 
-    void handleLinkStatusFrame(const NwkHeader &hdr, const uint8_t *payload, size_t length);
+    void handleLinkStatusFrame(const NwkFrameHeader &hdr, const uint8_t *payload, size_t length);
 
     void pruneNeighbors();
 
@@ -125,22 +125,22 @@ private:
                                        bool security, bool sourceRoute,
                                        const std::vector<uint16_t> &srcRoute);
 
-    bool parseNwkHeader(const std::vector<uint8_t> &data, NwkHeader &hdr, size_t &headerLen,
+    bool parseNwkHeader(const std::vector<uint8_t> &data, NwkFrameHeader &hdr, size_t &headerLen,
                         std::vector<uint16_t> &parsedSourceRoute);
 
     // Handlers for route commands
-    void handleRouteRequest(const NwkHeader &nwkHdr, const uint8_t *payload, size_t length);
+    void handleRouteRequest(const NwkFrameHeader &nwkHdr, const uint8_t *payload, size_t length);
 
-    void handleRouteReply(const NwkHeader &nwkHdr, const uint8_t *payload, size_t length);
+    void handleRouteReply(const NwkFrameHeader &nwkHdr, const uint8_t *payload, size_t length);
 
-    void handleManyToOneRequest(const NwkHeader &nwkHdr, const uint8_t *payload, size_t length);
+    void handleManyToOneRequest(const NwkFrameHeader &nwkHdr, const uint8_t *payload, size_t length);
 
-    void handleRouteRecord(const NwkHeader &nwkHdr, const uint8_t *payload, size_t length);
+    void handleRouteRecord(const NwkFrameHeader &nwkHdr, const uint8_t *payload, size_t length);
 
     // MTO route request
     bool sendMtoRouteRequest(uint8_t radius);
 
-    void handleRouteError(const NwkHeader &hdr, const uint8_t *payload, size_t length);
+    void handleRouteError(const NwkFrameHeader &hdr, const uint8_t *payload, size_t length);
 
     ZigbeeMac &m_mac;
     SecurityManager &m_sec;

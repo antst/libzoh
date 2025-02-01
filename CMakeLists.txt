@@ -16,6 +16,8 @@ add_library(zoh
         src/ZigbeeAps.cpp
         src/ZigbeeMac.cpp
         src/ZdoEndpointTable.cpp
+        src/ZigbeeMacHeader.cpp
+        src/ZigbeeNwkHeader.cpp
 )
 target_include_directories(zoh PUBLIC include)
 

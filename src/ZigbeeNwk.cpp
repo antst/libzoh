@@ -165,7 +165,7 @@ void ZigbeeNwk::sendLinkStatus() {
     std::cout << "[NWK] Sent link status, neighbors=" << (int) nbrCount << "\n";
 }
 
-void ZigbeeNwk::handleLinkStatusFrame(const NwkHeader &hdr,
+void ZigbeeNwk::handleLinkStatusFrame(const NwkFrameHeader &hdr,
                                       const uint8_t *payload,
                                       size_t length) {
     if (length < 2) return;
@@ -217,7 +217,7 @@ void ZigbeeNwk::sendRouteError(uint16_t originAddr, uint16_t brokenAddr) {
               << " for broken=0x" << brokenAddr << "\n";
 }
 
-void ZigbeeNwk::handleRouteError(const NwkHeader &hdr,
+void ZigbeeNwk::handleRouteError(const NwkFrameHeader &hdr,
                                  const uint8_t *payload,
                                  size_t length) {
     // [cmdId=0x05, origin(2B), broken(2B)]
@@ -278,7 +278,7 @@ void ZigbeeNwk::handleInboundMacFrame(const std::vector<uint8_t> &macFrame,
     if (!nwkDecrypt(macPayload))
         return;
     // parse NWK header
-    NwkHeader hdr;
+    NwkFrameHeader hdr;
     size_t headerLen = 0;
     std::vector<uint16_t> srcRoute;
     if (!parseNwkHeader(macPayload, hdr, headerLen, srcRoute)) {
@@ -374,7 +374,7 @@ bool ZigbeeNwk::sendMtoRouteRequest(uint8_t radius) {
     return sendNwkFrame(payload, 0xFFFF);
 }
 
-void ZigbeeNwk::handleManyToOneRequest(const NwkHeader &nwkHdr,
+void ZigbeeNwk::handleManyToOneRequest(const NwkFrameHeader &nwkHdr,
                                        const uint8_t *payload, size_t length) {
     // MTO request means "create a route back to the sender"
     // For example, we store nextHop = the neighbor from which we got this
@@ -397,7 +397,7 @@ void ZigbeeNwk::handleManyToOneRequest(const NwkHeader &nwkHdr,
 /********************************************************************
  * Source Routing: route record command
  ********************************************************************/
-void ZigbeeNwk::handleRouteRecord(const NwkHeader &nwkHdr,
+void ZigbeeNwk::handleRouteRecord(const NwkFrameHeader &nwkHdr,
                                   const uint8_t *payload, size_t length) {
     // route record might contain [cmdId=0x04, count(1B), list of shortAddrs]
     if (length < 2) return;
@@ -446,12 +446,12 @@ bool ZigbeeNwk::initiateRouteDiscovery(uint16_t dst) {
 /********************************************************************
  * Route Request / Reply (unchanged from simpler code)
  ********************************************************************/
-void ZigbeeNwk::handleRouteRequest(const NwkHeader &nwkHdr,
+void ZigbeeNwk::handleRouteRequest(const NwkFrameHeader &nwkHdr,
                                    const uint8_t *payload, size_t length) {
     // parse discSeq, target, forward, or if we're target -> route reply
 }
 
-void ZigbeeNwk::handleRouteReply(const NwkHeader &nwkHdr,
+void ZigbeeNwk::handleRouteReply(const NwkFrameHeader &nwkHdr,
                                  const uint8_t *payload, size_t length) {
     // parse route reply, set route to origin or final
 }
@@ -512,7 +512,7 @@ std::string ZigbeeNwk::debugNeighborTable() const {
 }
 
 
-bool ZigbeeNwk::parseNwkHeader(const std::vector<uint8_t> &data, NwkHeader &hdr, size_t &headerLen,
+bool ZigbeeNwk::parseNwkHeader(const std::vector<uint8_t> &data, NwkFrameHeader &hdr, size_t &headerLen,
                                std::vector<uint16_t> &parsedSourceRoute) {
     if (data.size() < 7) return false;
     uint8_t fc = data[0];
