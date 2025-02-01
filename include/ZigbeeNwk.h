@@ -64,7 +64,7 @@ public:
     void setFrameIndicationCallback(NwkFrameIndicationCallback cb);
 
     // Outbound NWK data
-    bool sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAddr, uint8_t radius);
+    bool sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAddr, uint8_t radius=0);
 
     /**
     * @brief Called by MAC layer when a raw MAC frame arrives that is identified as NWK.

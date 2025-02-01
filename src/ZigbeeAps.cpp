@@ -70,7 +70,7 @@ bool ZigbeeAps::sendApsData(uint16_t dstAddr, uint16_t clusterId,
     }
 
 // pass to NWK
-    return m_nwk.sendNwkFrame(apsFrame, dstAddr, 10);
+    return m_nwk.sendNwkFrame(apsFrame, dstAddr);
 }
 
 // inbound from NWK

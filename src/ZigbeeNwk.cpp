@@ -83,6 +83,7 @@ bool ZigbeeNwk::sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAd
     // 2) Build NWK frame
     bool security = false;
     bool srcRouteFlag = !routePath.empty();
+    if (radius==0) radius=m_radius;
     std::vector<uint8_t> nwkFrame = buildNwkFrame(payload, dstAddr, m_ownShortAddr, radius, m_sequenceNumber++,
                                                   security, srcRouteFlag, routePath);
     // NWK encrypt
@@ -229,7 +230,7 @@ void ZigbeeNwk::sendRouteError(uint16_t originAddr, uint16_t brokenAddr) {
     payload.push_back((brokenAddr >> 8) & 0xFF);
 
     // Usually unicast to origin. If we have a route to the origin, we use it
-    sendNwkFrame(payload, originAddr, m_radius);
+    sendNwkFrame(payload, originAddr);
     std::cout << "[NWK] Sent route error to origin=0x"
               << std::hex << originAddr
               << " for broken=0x" << brokenAddr << "\n";
@@ -354,14 +355,14 @@ void ZigbeeNwk::handleInboundMacFrame(const std::vector<uint8_t> &macPayload,
             if (it != srcRoute.end() && (it + 1) != srcRoute.end()) {
                 uint16_t nextHop = *(it + 1);
                 // forward
-                sendNwkFrame(macPayload, nextHop, m_radius);
+                sendNwkFrame(macPayload, nextHop);
             }
         } else {
             // normal routing
             uint16_t nextHop = 0;
             bool useSrcRoute = false;
             if (lookupRoute(hdr.destinationAddr, nextHop, useSrcRoute)) {
-                sendNwkFrame(macPayload, nextHop, m_radius);
+                sendNwkFrame(macPayload, nextHop);
             } else {
                 // route error or attempt repair
                 repairRoute(hdr.destinationAddr);
@@ -386,7 +387,7 @@ bool ZigbeeNwk::sendMtoRouteRequest(uint8_t radius) {
     payload.push_back(radius);
 
     // broadcast
-    return sendNwkFrame(payload, 0xFFFF, radius);
+    return sendNwkFrame(payload, 0xFFFF);
 }
 
 void ZigbeeNwk::handleManyToOneRequest(const NwkHeader &nwkHdr,
@@ -405,7 +406,7 @@ void ZigbeeNwk::handleManyToOneRequest(const NwkHeader &nwkHdr,
         // forward
         // naive re-broadcast
         std::vector<uint8_t> fwd(payload, payload + length);
-        sendNwkFrame(fwd, 0xFFFF, m_radius);
+        sendNwkFrame(fwd, 0xFFFF);
     }
 }
 
@@ -454,7 +455,7 @@ bool ZigbeeNwk::initiateRouteDiscovery(uint16_t dst) {
     rr.push_back((dst >> 8) & 0xFF);
 
     // broadcast
-    return sendNwkFrame(rr, 0xFFFF, m_radius);
+    return sendNwkFrame(rr, 0xFFFF);
 }
 
 
