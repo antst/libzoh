@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <cstdint>
 #include <unordered_map>
@@ -8,10 +9,10 @@
  * SecurityManager handles NWK & APS encryption, key storage, frame counters.
  * In a real Zigbee 3.0 stack, you'd do AES-CCM* with frame counters, store them persistently.
  */
-class SecurityManager
-{
+class SecurityManager {
 public:
     SecurityManager();
+
     ~SecurityManager();
 
     // NWK encryption/decryption
@@ -25,10 +26,12 @@ public:
     bool apsEncrypt(const std::vector<uint8_t> &plaintext,
                     uint64_t extAddr, // device link key
                     std::vector<uint8_t> &ciphertext);
+
     bool apsDecrypt(std::vector<uint8_t> &frame, uint64_t extAddr);
 
     // Key management
     void setNetworkKey(const std::vector<uint8_t> &nwkKey);
+
     void setLinkKey(uint64_t extAddr, const std::vector<uint8_t> &key);
 
 private:

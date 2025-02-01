@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cstdint>
 #include <vector>
 #include <mutex>
@@ -7,23 +8,24 @@
 #include "SecurityManager.h"
 
 using ApsIndicationCallback = std::function<void(uint8_t dstEndpoint,
-uint16_t clusterId,
-const std::vector<uint8_t>& payload,
-        uint16_t srcAddr,
-uint8_t srcEp)>;
+                                                 uint16_t clusterId,
+                                                 const std::vector<uint8_t> &payload,
+                                                 uint16_t srcAddr,
+                                                 uint8_t srcEp)>;
 
 using ApsDataIndicationCallback = std::function<void(uint16_t srcAddr,
                                                      uint16_t clusterId,
                                                      const std::vector<uint8_t> &apsPayload)>;
 
 
-class ZigbeeAps
-{
+class ZigbeeAps {
 public:
     ZigbeeAps(ZigbeeNwk &nwk, SecurityManager &sec);
+
     ~ZigbeeAps();
 
     void start();
+
     void stop();
 
     void setApsIndicationCallback(ApsIndicationCallback cb);

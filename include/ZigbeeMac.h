@@ -25,10 +25,10 @@ using MacTxDoneHandler = std::function<void(bool success)>;
  *   - Allows (optional) MAC association (coordinator side or device side)
  *   - Ensures thread safety with mutexes
  */
-class ZigbeeMac
-{
+class ZigbeeMac {
 public:
     ZigbeeMac(RawSpinelDriver &spinelDriver);
+
     ~ZigbeeMac();
 
     // Start the MAC driver: sets inbound callbacks, starts RCP if not started
@@ -45,7 +45,9 @@ public:
 
     // Basic config
     bool setChannel(uint8_t channel);
+
     bool setPanId(uint16_t panId);
+
     bool setExtendedAddress(uint64_t extAddr);
 
     // Send a raw 802.15.4 frame. NWK or higher builds the MAC header
@@ -56,7 +58,8 @@ public:
     // If device, send association request
     // (In many Zigbee 3.0 scenarios, NWK-level association is used instead)
     void enableMacAssociation(bool enable);
-    bool isMacAssociationEnabled() ;
+
+    bool isMacAssociationEnabled();
 
 private:
     // Inbound raw frame from RCP
@@ -67,6 +70,7 @@ private:
 
     // Parse association requests/indications if MAC assoc is enabled
     void handleAssociationRequest(const std::vector<uint8_t> &frame);
+
     void handleAssociationResponse(const std::vector<uint8_t> &frame);
 
 private:

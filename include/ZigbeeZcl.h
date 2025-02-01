@@ -1,13 +1,14 @@
 #pragma once
+
 #include <cstdint>
 #include <vector>
 #include "ZigbeeAps.h"
 #include "ZclStructs.h" // Contains ZclEndpoint, ZclCluster, etc.
 
-class ZigbeeZcl
-{
+class ZigbeeZcl {
 public:
     ZigbeeZcl(ZigbeeAps &aps);
+
     ~ZigbeeZcl();
 
     // Register an endpoint with clusters
