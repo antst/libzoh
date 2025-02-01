@@ -1,4 +1,4 @@
-#include "../../include/platform/SerialPort.h"
+#include "platform/SerialPort.h"
 
 #include <stdexcept>
 #include <iostream>

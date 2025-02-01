@@ -296,26 +296,30 @@ void ZigbeeNwk::handleInboundMacFrame(const std::vector<uint8_t> &macFrame,
 
         // check command ID
         if (payloadLen > 0) {
-            uint8_t cmdId = payloadPtr[0];
-            switch (cmdId) {
-                case 0x01: // normal route request
+            auto cmd = static_cast<NwkCommand>(payloadPtr[0]);
+            switch (cmd) {
+                case NwkCommand::ROUTE_REQUEST: // normal route request
                     handleRouteRequest(hdr, payloadPtr, payloadLen);
                     return;
-                case 0x02: // route reply
+                case NwkCommand::ROUTE_REPLY: // route reply
                     handleRouteReply(hdr, payloadPtr, payloadLen);
                     return;
-                case 0x03: // MTO route request
+                case NwkCommand::MTO_ROUTE_REQUEST: // MTO route request
                     handleManyToOneRequest(hdr, payloadPtr, payloadLen);
                     return;
-                case 0x04: // route record command
+                case NwkCommand::ROUTE_RECORD: // route record command
                     handleRouteRecord(hdr, payloadPtr, payloadLen);
                     return;
-                case 0x05: // route error
+                case NwkCommand::ROUTE_ERROR: // route error
                     handleRouteError(hdr, payloadPtr, payloadLen);
                     return;
-                case 0x06: // link status
+                case NwkCommand::LINK_STATUS: // link status
                     handleLinkStatusFrame(hdr, payloadPtr, payloadLen);
+                    return;
+                case NwkCommand::DATA:
                 default:
+                    // If the command is DATA (0x00) or unrecognized, pass it upward.
+                    std::cout << "[ZigbeeNwk] Passing NWK data to upper layer (no command processing).\n";
                     break;
             }
         }

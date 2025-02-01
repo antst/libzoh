@@ -1,4 +1,4 @@
-#include "../../include/platform/RawSpinelDriver.h"
+#include "platform/RawSpinelDriver.h"
 #include <iostream>
 #include <thread>
 #include <chrono>

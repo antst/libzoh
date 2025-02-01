@@ -1,4 +1,4 @@
-#include "../include/SecurityManager.h"
+#include "SecurityManager.h"
 #include <iostream>
 
 SecurityManager::SecurityManager()

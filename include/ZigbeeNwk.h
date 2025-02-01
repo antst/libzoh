@@ -6,6 +6,18 @@
 #include "ZigbeeMac.h"
 #include "SecurityManager.h"
 
+// --- NWK Command IDs (from NWK payload) ---
+enum class NwkCommand : uint8_t {
+    DATA = 0x00, // Normal data (or no command)
+    ROUTE_REQUEST = 0x01,
+    ROUTE_REPLY = 0x02,
+    MTO_ROUTE_REQUEST = 0x03,
+    ROUTE_RECORD = 0x04,
+    ROUTE_ERROR = 0x05,
+    LINK_STATUS = 0x06
+    // Add additional commands as needed
+};
+
 using NwkPayloadHandler = std::function<void(const std::vector<uint8_t> &nwkPayload,
                                              uint16_t srcAddr,
                                              uint16_t dstAddr)>;
@@ -64,7 +76,7 @@ public:
     void setNwkPayloadCallback(NwkPayloadHandler cb);
 
     // Outbound NWK data
-    bool sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAddr, uint8_t radius=0);
+    bool sendNwkFrame(const std::vector<uint8_t> &payload, uint16_t dstAddr, uint8_t radius = 0);
 
     /**
     * @brief Called by MAC layer when a raw MAC frame arrives that is identified as NWK.

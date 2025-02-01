@@ -1,4 +1,4 @@
-#include "../include/ZigbeeMac.h"
+#include "ZigbeeMac.h"
 #include <iostream>
 #include <algorithm>
 

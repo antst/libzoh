@@ -1,4 +1,4 @@
-#include "../include/ZigbeeAps.h"
+#include "ZigbeeAps.h"
 #include <iostream>
 
 ZigbeeAps::ZigbeeAps(ZigbeeNwk &nwk, SecurityManager &sec)
